@@ -224,7 +224,7 @@ function render<T>(state: LoadState<T>): string {
 }
 ```
 
-TypeScript's exhaustiveness checker will warn you if a new variant is added but not handled.
+To enforce exhaustiveness, add an explicit check (e.g., a `default` branch that assigns to `never` or calls an `assertNever` helper) so a newly added variant cannot compile unless it is handled.
 
 ---
 
