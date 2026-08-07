@@ -1,6 +1,13 @@
 import { sonic1Input, sonic2Input } from '../domain/initialData.ts';
 import type { FindGameResult, SonicGameRepository } from '../domain/sonicGameRepository.ts';
-import { createSonicGame, type DomainFailure, type DomainResult, type DomainSuccess, type RawSonicGameInput, type SonicGame } from '../domain/sonicGame.ts';
+import {
+    createDomainFailure,
+    createDomainSuccess,
+    isDomainFailure,
+    type DomainFailure,
+    type DomainResult,
+} from '../domain/domainResult.ts';
+import { createSonicGame, type RawSonicGameInput, type SonicGame } from '../domain/sonicGame.ts';
 
 const DEFAULT_STATIC_GAME_INPUTS = [sonic1Input, sonic2Input] as const;
 const DUPLICATE_GAME_ID_ERROR_PREFIX = 'Duplicate game ids found: ';
@@ -14,10 +21,6 @@ type SortableGame = Readonly<{
 }>;
 
 export type StaticSonicGameRepository = SonicGameRepository;
-
-const success = <T>(value: T): DomainSuccess<T> => ({ ok: true, value });
-
-const failure = (error: string): DomainFailure => ({ ok: false, error });
 
 const createFoundResult = (game: SonicGame): FindGameResult => ({
     type: 'found',
@@ -36,7 +39,7 @@ const validateUniqueGameField = (
         return null;
     }
 
-    return failure(`${errorPrefix}${duplicates.join(', ')}.`);
+    return createDomainFailure(`${errorPrefix}${duplicates.join(', ')}.`);
 };
 
 const compareSortableGames = (left: SortableGame, right: SortableGame): number => {
@@ -56,10 +59,21 @@ const parseGame = (
         return result;
     }
 
-    return success({
+    return createDomainSuccess({
         game: result.value,
         inputOrder,
     });
+};
+
+const collectSortableGames = (
+    parsedGameResults: readonly DomainResult<SortableGame>[],
+): DomainResult<readonly SortableGame[]> => {
+    const firstFailure = parsedGameResults.find(isDomainFailure);
+    if (firstFailure !== undefined) {
+        return firstFailure;
+    }
+
+    return createDomainSuccess(parsedGameResults.flatMap(result => (result.ok ? [result.value] : [])));
 };
 
 const copyGames = (games: readonly SonicGame[]): readonly SonicGame[] => [...games];
@@ -87,14 +101,12 @@ const createRepository = (games: readonly SonicGame[]): StaticSonicGameRepositor
 export const createStaticSonicGameRepository = (
     inputs: readonly RawSonicGameInput[],
 ): DomainResult<StaticSonicGameRepository> => {
-    const parsedGameResults = inputs.map(parseGame);
-    const firstFailure = parsedGameResults.find((result): result is DomainFailure => !result.ok);
-    if (firstFailure !== undefined) {
-        return firstFailure;
+    const sortableGamesResult = collectSortableGames(inputs.map(parseGame));
+    if (!sortableGamesResult.ok) {
+        return sortableGamesResult;
     }
 
-    const successfulGameResults = parsedGameResults as readonly DomainSuccess<SortableGame>[];
-    const sortableGames = successfulGameResults.map(result => result.value);
+    const sortableGames = sortableGamesResult.value;
     const duplicateIdFailure = validateUniqueGameField(
         sortableGames.map(entry => entry.game.id),
         DUPLICATE_GAME_ID_ERROR_PREFIX,
@@ -111,8 +123,8 @@ export const createStaticSonicGameRepository = (
         return duplicateSlugFailure;
     }
 
-    const games = sortableGames.sort(compareSortableGames).map(entry => entry.game);
-    return success(createRepository(games));
+    const games = [...sortableGames].sort(compareSortableGames).map(entry => entry.game);
+    return createDomainSuccess(createRepository(games));
 };
 
 const createDefaultStaticSonicGameRepository = (): StaticSonicGameRepository => {
