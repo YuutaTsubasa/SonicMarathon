@@ -17,7 +17,7 @@ Every item maps to one of the project's [sixteen coding principles](./coding-pri
 - [ ] **[P3]** Have you avoided unnecessary wrapper objects or stores around plain values?
 - [ ] **[P4]** Have you named every magic number and string constant?
 - [ ] **[P5]** Have you moved all constant declarations to module scope (outside functions)?
-- [ ] **[P6]** Have you separated logical sections with blank lines?
+- [ ] **[P6]** Have you wrapped code owned by paired begin/end-style calls in a `{ }` block so the scope is visually explicit?
 - [ ] **[P7]** Have you added braces to every `if`/`else`/`for`/`while` block?
 - [ ] **[P8]** Have you replaced imperative loops with declarative collection operations (`map`, `filter`, `reduce`, …)?
 - [ ] **[P9]** Have you used `const` everywhere and allowed TypeScript to infer types?

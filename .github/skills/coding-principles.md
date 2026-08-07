@@ -214,12 +214,17 @@ type LoadState<T> =
   | { kind: "success"; data: T }
   | { kind: "failure"; error: string };
 
+function assertNever(value: never): never {
+  throw new Error(`Unhandled state: ${JSON.stringify(value)}`);
+}
+
 function render<T>(state: LoadState<T>): string {
   switch (state.kind) {
     case "idle":    return "Idle";
     case "loading": return "Loading…";
     case "success": return `Data: ${state.data}`;
     case "failure": return `Error: ${state.error}`;
+    default:        return assertNever(state);
   }
 }
 ```
