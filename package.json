@@ -1,0 +1,22 @@
+{
+  "name": "sonicmarathon",
+  "version": "1.0.0",
+  "description": "A Svelte-based project (with optional Tauri v2 desktop packaging) developed with TDD, DDD, Functional-Based, and Reactive principles.",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://localhost:26831/YuutaTsubasa/SonicMarathon"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@vitest/coverage-v8": "^4.1.10",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10"
+  }
+}
