@@ -36,6 +36,6 @@ tests/
 
 - **Domain objects are plain TypeScript types / discriminated unions** — no class instances with mutable fields.
 - **Side effects are pushed to the edges** — domain functions are pure; Tauri commands and fetch calls live in `infrastructure/`.
-- **Svelte stores are derived where possible** — avoid manual `$store.set()` calls when a `derived()` store can express the same relationship.
+- **Svelte stores are derived where possible** — avoid manual `store.set()` / `store.update()` calls when a `derived()` store can express the same relationship.
 - **All async work uses `async/await`** — no raw Promise chains or callback APIs unless wrapping a third-party library.
 - **Tests run without a browser** — Svelte component logic is extracted into plain TypeScript functions that are unit-tested independently.
