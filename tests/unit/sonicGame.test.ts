@@ -168,12 +168,11 @@ describe('createSonicGame', () => {
         }
     });
 
-    it('Domain object is deeply immutable at the TypeScript type level', () => {
-        const result = createSonicGame(validInput());
-        expect(result.ok).toBe(true);
+    it('Given a non-empty invalid recommended version, when game creation is attempted, then validation fails', () => {
+        const result = createSonicGame(validInput({ recommendedVersion: 'invalid-version' }));
+        expect(result.ok).toBe(false);
         if (!result.ok) {
-            throw new Error(`Expected successful domain creation: ${result.error}`);
+            expect(result.error).toMatch(/not a valid version/);
         }
-        expect(result.value.id).toBe('test-game');
     });
 });
