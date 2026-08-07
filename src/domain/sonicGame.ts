@@ -144,17 +144,9 @@ function validateLevels(levels: readonly MarathonLevel[]): DomainFailure | null 
 
 // ── Factory ────────────────────────────────────────────────────────────────────
 
-export type SonicGameInput = Readonly<{
-    id: GameId;
-    slug: GameSlug;
-    title: string;
-    releaseYear: number;
-    era: GameEra;
-    recommendedVersion: GameVersion;
-    platforms: readonly Platform[];
-    assets: GameAssets;
-    levels: readonly MarathonLevel[];
-}>;
+/** Alias kept for clarity at call-sites: the factory accepts the same shape
+ *  that `SonicGame` describes — validated and returned as-is once checks pass. */
+export type SonicGameInput = SonicGame;
 
 export function createSonicGame(input: SonicGameInput): DomainResult<SonicGame> {
     if (!input.id || input.id.trim() === '') {
