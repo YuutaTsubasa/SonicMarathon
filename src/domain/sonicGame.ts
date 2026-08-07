@@ -194,21 +194,13 @@ export const createSonicGame = (input: RawSonicGameInput): DomainResult<SonicGam
         return failure('Levels must not be empty.');
     }
 
-    const parsedLevelsResult = input.levels.reduce<DomainResult<MarathonLevel[]>>(
-        (acc, rawLevel) => {
-            if (!acc.ok) return acc;
-            const result = parseMarathonLevel(rawLevel);
-            if (!result.ok) return result;
-            return success([...acc.value, result.value]);
-        },
-        success([]),
-    );
-
-    if (!parsedLevelsResult.ok) {
-        return parsedLevelsResult;
+    const levelResults = input.levels.map(parseMarathonLevel);
+    const firstFailure = levelResults.find((r): r is DomainFailure => !r.ok);
+    if (firstFailure !== undefined) {
+        return firstFailure;
     }
 
-    const parsedLevels = parsedLevelsResult.value;
+    const parsedLevels = levelResults.flatMap(r => (r.ok ? [r.value] : []));
     const levelError = validateLevels(parsedLevels);
     if (levelError !== null) {
         return levelError;
