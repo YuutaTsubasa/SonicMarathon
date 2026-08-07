@@ -26,7 +26,7 @@ export const sonic1Input: SonicGameInput = {
             description: '以紀念模式完成遊戲並收集全部混沌寶石',
             conditions: [
                 { type: 'clear-mode', mode: 'anniversary' },
-                { type: 'all-chaos-emeralds' },
+                { type: 'all-chaos-emeralds', mode: 'anniversary' },
             ],
         },
         {
@@ -41,7 +41,7 @@ export const sonic1Input: SonicGameInput = {
             description: '以經典模式完成遊戲並收集全部混沌寶石',
             conditions: [
                 { type: 'clear-mode', mode: 'classic' },
-                { type: 'all-chaos-emeralds' },
+                { type: 'all-chaos-emeralds', mode: 'classic' },
             ],
         },
         {
@@ -83,7 +83,7 @@ export const sonic2Input: SonicGameInput = {
             description: '以紀念模式完成遊戲並收集全部混沌寶石',
             conditions: [
                 { type: 'clear-mode', mode: 'anniversary' },
-                { type: 'all-chaos-emeralds' },
+                { type: 'all-chaos-emeralds', mode: 'anniversary' },
             ],
         },
         {
@@ -98,7 +98,7 @@ export const sonic2Input: SonicGameInput = {
             description: '以經典模式完成遊戲並收集全部混沌寶石',
             conditions: [
                 { type: 'clear-mode', mode: 'classic' },
-                { type: 'all-chaos-emeralds' },
+                { type: 'all-chaos-emeralds', mode: 'classic' },
             ],
         },
         {
@@ -107,8 +107,8 @@ export const sonic2Input: SonicGameInput = {
             description:
                 '以紀念模式所有角色組合收集全部混沌寶石通關，以及以經典模式所有角色組合收集全部混沌寶石通關',
             conditions: [
-                { type: 'all-characters-clear', mode: 'anniversary', includeAllEmeralds: true },
-                { type: 'all-characters-clear', mode: 'classic', includeAllEmeralds: true },
+                { type: 'all-character-combinations-clear', mode: 'anniversary', includeAllEmeralds: true },
+                { type: 'all-character-combinations-clear', mode: 'classic', includeAllEmeralds: true },
             ],
         },
     ],

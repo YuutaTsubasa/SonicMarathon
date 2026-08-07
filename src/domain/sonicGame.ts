@@ -1,9 +1,5 @@
-// ── Primitive Aliases ──────────────────────────────────────────────────────────
-
 export type GameId = string;
 export type GameSlug = string;
-
-// ── Enumerations ───────────────────────────────────────────────────────────────
 
 export type GameEra =
     | 'classic'
@@ -34,8 +30,6 @@ export type GameVersion =
     | 'game-gear'
     | 'master-system';
 
-// ── Assets ─────────────────────────────────────────────────────────────────────
-
 export type ImageAssetRef = Readonly<{
     src: string;
     alt: string;
@@ -47,8 +41,6 @@ export type GameAssets = Readonly<{
     screenshots: readonly ImageAssetRef[];
 }>;
 
-// ── Marathon Condition (discriminated union) ───────────────────────────────────
-
 export type ClearModeCondition = Readonly<{
     type: 'clear-mode';
     mode: 'anniversary' | 'classic';
@@ -56,10 +48,17 @@ export type ClearModeCondition = Readonly<{
 
 export type AllChaosEmeraldsCondition = Readonly<{
     type: 'all-chaos-emeralds';
+    mode: 'anniversary' | 'classic';
 }>;
 
 export type AllCharactersClearCondition = Readonly<{
     type: 'all-characters-clear';
+    mode: 'anniversary' | 'classic';
+    includeAllEmeralds: boolean;
+}>;
+
+export type AllCharacterCombinationsClearCondition = Readonly<{
+    type: 'all-character-combinations-clear';
     mode: 'anniversary' | 'classic';
     includeAllEmeralds: boolean;
 }>;
@@ -73,9 +72,8 @@ export type MarathonCondition =
     | ClearModeCondition
     | AllChaosEmeraldsCondition
     | AllCharactersClearCondition
+    | AllCharacterCombinationsClearCondition
     | CompletePreviousLevelCondition;
-
-// ── Marathon Level ─────────────────────────────────────────────────────────────
 
 export type MarathonLevelNumber = 1 | 2 | 3 | 4 | 5;
 
@@ -85,8 +83,6 @@ export type MarathonLevel = Readonly<{
     description: string;
     conditions: readonly MarathonCondition[];
 }>;
-
-// ── Sonic Game ─────────────────────────────────────────────────────────────────
 
 export type SonicGame = Readonly<{
     id: GameId;
@@ -100,8 +96,6 @@ export type SonicGame = Readonly<{
     levels: readonly MarathonLevel[];
 }>;
 
-// ── Result type ────────────────────────────────────────────────────────────────
-
 export type DomainSuccess<T> = Readonly<{ ok: true; value: T }>;
 export type DomainFailure = Readonly<{ ok: false; error: string }>;
 export type DomainResult<T> = DomainSuccess<T> | DomainFailure;
@@ -109,15 +103,24 @@ export type DomainResult<T> = DomainSuccess<T> | DomainFailure;
 const success = <T>(value: T): DomainSuccess<T> => ({ ok: true, value });
 const failure = (error: string): DomainFailure => ({ ok: false, error });
 
-// ── Validation ─────────────────────────────────────────────────────────────────
+export type SonicGameInput = Readonly<{
+    id: string;
+    slug: string;
+    title: string;
+    releaseYear: number;
+    era: GameEra;
+    recommendedVersion: GameVersion | '';
+    platforms: readonly Platform[];
+    assets: GameAssets;
+    levels: readonly MarathonLevel[];
+}>;
 
 const VALID_LEVEL_NUMBERS: ReadonlySet<number> = new Set([1, 2, 3, 4, 5]);
 
-function isMarathonLevelNumber(n: number): n is MarathonLevelNumber {
-    return VALID_LEVEL_NUMBERS.has(n);
-}
+const isMarathonLevelNumber = (n: number): n is MarathonLevelNumber =>
+    VALID_LEVEL_NUMBERS.has(n);
 
-function validateLevels(levels: readonly MarathonLevel[]): DomainFailure | null {
+const validateLevels = (levels: readonly MarathonLevel[]): DomainFailure | null => {
     if (levels.length === 0) {
         return failure('Levels must not be empty.');
     }
@@ -130,25 +133,18 @@ function validateLevels(levels: readonly MarathonLevel[]): DomainFailure | null 
     }
 
     const sorted = [...numbers].sort((a, b) => a - b);
-    for (let i = 0; i < sorted.length; i++) {
-        const expected = i + 1;
-        if (!isMarathonLevelNumber(expected) || sorted[i] !== expected) {
-            return failure(
-                `Levels must be consecutive starting from 1. Missing level ${expected}.`
-            );
-        }
+    const missingLevel = sorted.reduce<number | null>(
+        (acc, num, i) => acc ?? (isMarathonLevelNumber(i + 1) && num !== i + 1 ? i + 1 : null),
+        null,
+    );
+    if (missingLevel !== null) {
+        return failure(`Levels must be consecutive starting from 1. Missing level ${missingLevel}.`);
     }
 
     return null;
-}
+};
 
-// ── Factory ────────────────────────────────────────────────────────────────────
-
-/** Alias kept for clarity at call-sites: the factory accepts the same shape
- *  that `SonicGame` describes — validated and returned as-is once checks pass. */
-export type SonicGameInput = SonicGame;
-
-export function createSonicGame(input: SonicGameInput): DomainResult<SonicGame> {
+export const createSonicGame = (input: SonicGameInput): DomainResult<SonicGame> => {
     if (!input.id || input.id.trim() === '') {
         return failure('Game id must not be empty.');
     }
@@ -183,4 +179,4 @@ export function createSonicGame(input: SonicGameInput): DomainResult<SonicGame> 
     };
 
     return success(game);
-}
+};

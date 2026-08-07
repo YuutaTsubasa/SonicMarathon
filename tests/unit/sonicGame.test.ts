@@ -3,41 +3,35 @@ import { createSonicGame } from '../../src/domain/sonicGame.ts';
 import type { SonicGameInput, MarathonLevel } from '../../src/domain/sonicGame.ts';
 import { sonic1Input, sonic2Input } from '../../src/domain/initialData.ts';
 
-// ── Helpers ────────────────────────────────────────────────────────────────────
-
-function validInput(overrides: Partial<SonicGameInput> = {}): SonicGameInput {
-    return {
-        id: 'test-game',
-        slug: 'test',
-        title: 'Test Game',
-        releaseYear: 2000,
-        era: 'classic',
-        recommendedVersion: 'sonic-origins',
-        platforms: ['pc'],
-        assets: {
-            logo: { src: '/logo.png', alt: 'logo' },
-            heroImage: { src: '/hero.png', alt: 'hero' },
-            screenshots: [],
+const validInput = (overrides: Partial<SonicGameInput> = {}): SonicGameInput => ({
+    id: 'test-game',
+    slug: 'test',
+    title: 'Test Game',
+    releaseYear: 2000,
+    era: 'classic',
+    recommendedVersion: 'sonic-origins',
+    platforms: ['pc'],
+    assets: {
+        logo: { src: '/logo.png', alt: 'logo' },
+        heroImage: { src: '/hero.png', alt: 'hero' },
+        screenshots: [],
+    },
+    levels: [
+        {
+            level: 1,
+            title: 'Level 1',
+            description: 'First level',
+            conditions: [{ type: 'clear-mode', mode: 'anniversary' }],
         },
-        levels: [
-            {
-                level: 1,
-                title: 'Level 1',
-                description: 'First level',
-                conditions: [{ type: 'clear-mode', mode: 'anniversary' }],
-            },
-            {
-                level: 2,
-                title: 'Level 2',
-                description: 'Second level',
-                conditions: [{ type: 'clear-mode', mode: 'classic' }],
-            },
-        ],
-        ...overrides,
-    };
-}
-
-// ── Tests ──────────────────────────────────────────────────────────────────────
+        {
+            level: 2,
+            title: 'Level 2',
+            description: 'Second level',
+            conditions: [{ type: 'clear-mode', mode: 'classic' }],
+        },
+    ],
+    ...overrides,
+});
 
 describe('createSonicGame', () => {
     it('Given a valid Sonic game, when it is created, then the domain object is returned successfully', () => {
@@ -76,11 +70,7 @@ describe('createSonicGame', () => {
     });
 
     it('Given a game with no recommended version, when game creation is attempted, then validation fails', () => {
-        const input = {
-            ...validInput(),
-            recommendedVersion: '' as never,
-        };
-        const result = createSonicGame(input);
+        const result = createSonicGame(validInput({ recommendedVersion: '' }));
         expect(result.ok).toBe(false);
         if (!result.ok) {
             expect(result.error).toMatch(/recommendedVersion/);
@@ -124,9 +114,11 @@ describe('createSonicGame', () => {
         const result = createSonicGame(validInput());
         expect(result.ok).toBe(true);
         if (result.ok) {
-            // Verify Object.isFrozen is NOT required by the spec, but the value
-            // is returned as a plain readonly object — structure check is enough
-            expect(typeof result.value).toBe('object');
+            const game = result.value;
+            // @ts-expect-error — SonicGame is Readonly; direct property assignment must not compile
+            game.title = 'mutated';
+            // @ts-expect-error — nested arrays are readonly; push must not compile
+            game.levels.push({ level: 3, title: '', description: '', conditions: [] });
         }
     });
 });
