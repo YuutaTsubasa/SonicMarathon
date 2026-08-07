@@ -1,9 +1,9 @@
 import { describe, it, expect } from 'vitest';
 import { createSonicGame } from '../../src/domain/sonicGame.ts';
-import type { SonicGameInput, MarathonLevel } from '../../src/domain/sonicGame.ts';
+import type { RawSonicGameInput, RawMarathonLevelInput } from '../../src/domain/sonicGame.ts';
 import { sonic1Input, sonic2Input } from '../../src/domain/initialData.ts';
 
-const validInput = (overrides: Partial<SonicGameInput> = {}): SonicGameInput => ({
+const validInput = (overrides: Partial<RawSonicGameInput> = {}): RawSonicGameInput => ({
     id: 'test-game',
     slug: 'test',
     title: 'Test Game',
@@ -44,7 +44,7 @@ describe('createSonicGame', () => {
     });
 
     it('Given levels 1, 2, 4, when game creation is attempted, then validation fails because Level 3 is missing', () => {
-        const levels: readonly MarathonLevel[] = [
+        const levels: readonly RawMarathonLevelInput[] = [
             { level: 1, title: 'L1', description: '', conditions: [] },
             { level: 2, title: 'L2', description: '', conditions: [] },
             { level: 4, title: 'L4', description: '', conditions: [] },
@@ -57,7 +57,7 @@ describe('createSonicGame', () => {
     });
 
     it('Given duplicate Level 2, when game creation is attempted, then validation fails', () => {
-        const levels: readonly MarathonLevel[] = [
+        const levels: readonly RawMarathonLevelInput[] = [
             { level: 1, title: 'L1', description: '', conditions: [] },
             { level: 2, title: 'L2a', description: '', conditions: [] },
             { level: 2, title: 'L2b', description: '', conditions: [] },
@@ -66,6 +66,17 @@ describe('createSonicGame', () => {
         expect(result.ok).toBe(false);
         if (!result.ok) {
             expect(result.error).toMatch(/[Dd]uplicate/);
+        }
+    });
+
+    it('Given an out-of-range level number, when game creation is attempted, then validation fails', () => {
+        const levels: readonly RawMarathonLevelInput[] = [
+            { level: 0, title: 'L0', description: '', conditions: [] },
+        ];
+        const result = createSonicGame(validInput({ levels }));
+        expect(result.ok).toBe(false);
+        if (!result.ok) {
+            expect(result.error).toMatch(/[Ii]nvalid level/);
         }
     });
 
@@ -98,7 +109,7 @@ describe('createSonicGame', () => {
     });
 
     it('Levels are sorted by level number in the returned domain object', () => {
-        const levels: readonly MarathonLevel[] = [
+        const levels: readonly RawMarathonLevelInput[] = [
             { level: 2, title: 'L2', description: '', conditions: [] },
             { level: 1, title: 'L1', description: '', conditions: [] },
         ];

@@ -75,7 +75,14 @@ export type MarathonCondition =
     | AllCharacterCombinationsClearCondition
     | CompletePreviousLevelCondition;
 
-export type MarathonLevelNumber = 1 | 2 | 3 | 4 | 5;
+const VALID_LEVEL_NUMBERS = [1, 2, 3, 4, 5] as const;
+
+export type MarathonLevelNumber = (typeof VALID_LEVEL_NUMBERS)[number];
+
+const VALID_LEVEL_NUMBER_SET: ReadonlySet<number> = new Set(VALID_LEVEL_NUMBERS);
+
+const isMarathonLevelNumber = (n: number): n is MarathonLevelNumber =>
+    VALID_LEVEL_NUMBER_SET.has(n);
 
 export type MarathonLevel = Readonly<{
     level: MarathonLevelNumber;
@@ -103,28 +110,46 @@ export type DomainResult<T> = DomainSuccess<T> | DomainFailure;
 const success = <T>(value: T): DomainSuccess<T> => ({ ok: true, value });
 const failure = (error: string): DomainFailure => ({ ok: false, error });
 
-export type SonicGameInput = Readonly<{
+export type RawMarathonLevelInput = Readonly<{
+    level: number;
+    title: string;
+    description: string;
+    conditions: readonly MarathonCondition[];
+}>;
+
+export type RawSonicGameInput = Readonly<{
     id: string;
     slug: string;
     title: string;
     releaseYear: number;
     era: GameEra;
-    recommendedVersion: GameVersion | '';
+    recommendedVersion: string;
     platforms: readonly Platform[];
     assets: GameAssets;
-    levels: readonly MarathonLevel[];
+    levels: readonly RawMarathonLevelInput[];
 }>;
 
-const VALID_LEVEL_NUMBERS: ReadonlySet<number> = new Set([1, 2, 3, 4, 5]);
+const VALID_GAME_VERSIONS = [
+    'sonic-origins',
+    'sonic-origins-plus',
+    'mega-drive',
+    'genesis',
+    'game-gear',
+    'master-system',
+] as const satisfies readonly GameVersion[];
 
-const isMarathonLevelNumber = (n: number): n is MarathonLevelNumber =>
-    VALID_LEVEL_NUMBERS.has(n);
+const VALID_GAME_VERSION_SET: ReadonlySet<string> = new Set(VALID_GAME_VERSIONS);
+
+const isGameVersion = (s: string): s is GameVersion => VALID_GAME_VERSION_SET.has(s);
+
+const parseMarathonLevel = (raw: RawMarathonLevelInput): DomainResult<MarathonLevel> => {
+    if (!isMarathonLevelNumber(raw.level)) {
+        return failure(`Invalid level number: ${raw.level}. Must be one of ${VALID_LEVEL_NUMBERS.join(', ')}.`);
+    }
+    return success({ ...raw, level: raw.level });
+};
 
 const validateLevels = (levels: readonly MarathonLevel[]): DomainFailure | null => {
-    if (levels.length === 0) {
-        return failure('Levels must not be empty.');
-    }
-
     const numbers = levels.map(l => l.level);
 
     const duplicates = numbers.filter((n, i) => numbers.indexOf(n) !== i);
@@ -144,7 +169,7 @@ const validateLevels = (levels: readonly MarathonLevel[]): DomainFailure | null 
     return null;
 };
 
-export const createSonicGame = (input: SonicGameInput): DomainResult<SonicGame> => {
+export const createSonicGame = (input: RawSonicGameInput): DomainResult<SonicGame> => {
     if (!input.id || input.id.trim() === '') {
         return failure('Game id must not be empty.');
     }
@@ -157,11 +182,28 @@ export const createSonicGame = (input: SonicGameInput): DomainResult<SonicGame> 
         return failure('Game title must not be empty.');
     }
 
-    if (!input.recommendedVersion) {
+    if (!input.recommendedVersion || input.recommendedVersion.trim() === '') {
         return failure('Game recommendedVersion must be specified.');
     }
 
-    const levelError = validateLevels(input.levels);
+    if (!isGameVersion(input.recommendedVersion)) {
+        return failure(`Game recommendedVersion '${input.recommendedVersion}' is not a valid version.`);
+    }
+
+    if (input.levels.length === 0) {
+        return failure('Levels must not be empty.');
+    }
+
+    const parsedLevels: MarathonLevel[] = [];
+    for (const rawLevel of input.levels) {
+        const result = parseMarathonLevel(rawLevel);
+        if (!result.ok) {
+            return result;
+        }
+        parsedLevels.push(result.value);
+    }
+
+    const levelError = validateLevels(parsedLevels);
     if (levelError !== null) {
         return levelError;
     }
@@ -175,7 +217,7 @@ export const createSonicGame = (input: SonicGameInput): DomainResult<SonicGame> 
         recommendedVersion: input.recommendedVersion,
         platforms: input.platforms,
         assets: input.assets,
-        levels: [...input.levels].sort((a, b) => a.level - b.level),
+        levels: parsedLevels.sort((a, b) => a.level - b.level),
     };
 
     return success(game);

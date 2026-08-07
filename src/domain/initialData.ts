@@ -1,6 +1,6 @@
-import type { SonicGameInput } from './sonicGame.ts';
+import type { RawSonicGameInput } from './sonicGame.ts';
 
-export const sonic1Input: SonicGameInput = {
+export const sonic1Input: RawSonicGameInput = {
     id: 'sonic-the-hedgehog-1',
     slug: 'sonic-1',
     title: 'Sonic the Hedgehog',
@@ -57,7 +57,7 @@ export const sonic1Input: SonicGameInput = {
     ],
 };
 
-export const sonic2Input: SonicGameInput = {
+export const sonic2Input: RawSonicGameInput = {
     id: 'sonic-the-hedgehog-2',
     slug: 'sonic-2',
     title: 'Sonic the Hedgehog 2',
