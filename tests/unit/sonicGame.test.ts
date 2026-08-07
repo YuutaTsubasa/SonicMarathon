@@ -175,4 +175,13 @@ describe('createSonicGame', () => {
             expect(result.error).toMatch(/not a valid version/);
         }
     });
+
+    it('SonicGame readonly type assertions are compile-time checked', () => {
+        const result = createSonicGame(validInput());
+        expect(result.ok).toBe(true);
+        if (!result.ok) {
+            throw new Error(`Expected successful domain creation: ${result.error}`);
+        }
+        expect(result.value.id).toBe('test-game');
+    });
 });
