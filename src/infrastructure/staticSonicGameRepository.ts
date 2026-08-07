@@ -62,10 +62,10 @@ const parseGame = (
     });
 };
 
-const createReadonlyGameCollection = (games: readonly SonicGame[]): readonly SonicGame[] => [...games];
+const copyGames = (games: readonly SonicGame[]): readonly SonicGame[] => [...games];
 
 const createRepository = (games: readonly SonicGame[]): StaticSonicGameRepository => ({
-    getAll: () => createReadonlyGameCollection(games),
+    getAll: () => copyGames(games),
     findById: id => {
         const game = games.find(candidate => candidate.id === id);
         if (game === undefined) {
@@ -93,7 +93,8 @@ export const createStaticSonicGameRepository = (
         return firstFailure;
     }
 
-    const sortableGames = parsedGameResults.flatMap(result => (result.ok ? [result.value] : []));
+    const successfulGameResults = parsedGameResults as readonly DomainSuccess<SortableGame>[];
+    const sortableGames = successfulGameResults.map(result => result.value);
     const duplicateIdFailure = validateUniqueGameField(
         sortableGames.map(entry => entry.game.id),
         DUPLICATE_GAME_ID_ERROR_PREFIX,
