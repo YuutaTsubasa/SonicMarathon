@@ -1,3 +1,11 @@
+import {
+    createDomainFailure,
+    createDomainSuccess,
+    isDomainFailure,
+    type DomainFailure,
+    type DomainResult,
+} from './domainResult.ts';
+
 export type GameId = string;
 export type GameSlug = string;
 
@@ -103,13 +111,6 @@ export type SonicGame = Readonly<{
     levels: readonly MarathonLevel[];
 }>;
 
-export type DomainSuccess<T> = Readonly<{ ok: true; value: T }>;
-export type DomainFailure = Readonly<{ ok: false; error: string }>;
-export type DomainResult<T> = DomainSuccess<T> | DomainFailure;
-
-const success = <T>(value: T): DomainSuccess<T> => ({ ok: true, value });
-const failure = (error: string): DomainFailure => ({ ok: false, error });
-
 const cloneCondition = (condition: MarathonCondition): MarathonCondition => ({ ...condition });
 
 const cloneAssetRef = (asset: ImageAssetRef): ImageAssetRef => ({ ...asset });
@@ -154,9 +155,11 @@ const isGameVersion = (s: string): s is GameVersion => VALID_GAME_VERSION_SET.ha
 
 const parseMarathonLevel = (raw: RawMarathonLevelInput): DomainResult<MarathonLevel> => {
     if (!isMarathonLevelNumber(raw.level)) {
-        return failure(`Invalid level number: ${raw.level}. Must be one of ${VALID_LEVEL_NUMBERS.join(', ')}.`);
+        return createDomainFailure(
+            `Invalid level number: ${raw.level}. Must be one of ${VALID_LEVEL_NUMBERS.join(', ')}.`,
+        );
     }
-    return success({
+    return createDomainSuccess({
         level: raw.level,
         title: raw.title,
         description: raw.description,
@@ -169,13 +172,15 @@ const validateLevels = (levels: readonly MarathonLevel[]): DomainFailure | null 
 
     const duplicates = [...new Set(numbers.filter((n, i) => numbers.indexOf(n) !== i))];
     if (duplicates.length > 0) {
-        return failure(`Duplicate level numbers found: ${duplicates.join(', ')}.`);
+        return createDomainFailure(`Duplicate level numbers found: ${duplicates.join(', ')}.`);
     }
 
     const sorted = [...numbers].sort((a, b) => a - b);
     const missingIndex = sorted.findIndex((num, i) => num !== i + 1);
     if (missingIndex !== -1) {
-        return failure(`Levels must be consecutive starting from 1. Missing level ${missingIndex + 1}.`);
+        return createDomainFailure(
+            `Levels must be consecutive starting from 1. Missing level ${missingIndex + 1}.`,
+        );
     }
 
     return null;
@@ -183,31 +188,33 @@ const validateLevels = (levels: readonly MarathonLevel[]): DomainFailure | null 
 
 export const createSonicGame = (input: RawSonicGameInput): DomainResult<SonicGame> => {
     if (!input.id || input.id.trim() === '') {
-        return failure('Game id must not be empty.');
+        return createDomainFailure('Game id must not be empty.');
     }
 
     if (!input.slug || input.slug.trim() === '') {
-        return failure('Game slug must not be empty.');
+        return createDomainFailure('Game slug must not be empty.');
     }
 
     if (!input.title || input.title.trim() === '') {
-        return failure('Game title must not be empty.');
+        return createDomainFailure('Game title must not be empty.');
     }
 
     if (!input.recommendedVersion || input.recommendedVersion.trim() === '') {
-        return failure('Game recommendedVersion must be specified.');
+        return createDomainFailure('Game recommendedVersion must be specified.');
     }
 
     if (!isGameVersion(input.recommendedVersion)) {
-        return failure(`Game recommendedVersion '${input.recommendedVersion}' is not a valid version.`);
+        return createDomainFailure(
+            `Game recommendedVersion '${input.recommendedVersion}' is not a valid version.`,
+        );
     }
 
     if (input.levels.length === 0) {
-        return failure('Levels must not be empty.');
+        return createDomainFailure('Levels must not be empty.');
     }
 
     const levelResults = input.levels.map(parseMarathonLevel);
-    const firstFailure = levelResults.find((r): r is DomainFailure => !r.ok);
+    const firstFailure = levelResults.find(isDomainFailure);
     if (firstFailure !== undefined) {
         return firstFailure;
     }
@@ -230,5 +237,5 @@ export const createSonicGame = (input: RawSonicGameInput): DomainResult<SonicGam
         levels: [...parsedLevels].sort((a, b) => a.level - b.level),
     };
 
-    return success(game);
+    return createDomainSuccess(game);
 };
