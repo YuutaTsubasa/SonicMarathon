@@ -33,13 +33,6 @@ const validInput = (overrides: Partial<RawSonicGameInput> = {}): RawSonicGameInp
     ...overrides,
 });
 
-const assertReadonlyType = (game: SonicGame): void => {
-    // @ts-expect-error — SonicGame is Readonly; direct property assignment must not compile
-    game.title = 'mutated';
-    // @ts-expect-error — nested arrays are readonly; push must not compile
-    game.levels.push({ level: 3, title: '', description: '', conditions: [] });
-};
-
 describe('createSonicGame', () => {
     it('Given a valid Sonic game, when it is created, then the domain object is returned successfully', () => {
         const result = createSonicGame(validInput());
@@ -182,6 +175,16 @@ describe('createSonicGame', () => {
         if (!result.ok) {
             throw new Error(`Expected successful domain creation: ${result.error}`);
         }
-        expect(result.value.id).toBe('test-game');
+        const game = result.value;
+        expect(game.id).toBe('test-game');
+
+        const assertReadonlyType = (g: SonicGame): void => {
+            // @ts-expect-error — SonicGame is Readonly; direct property assignment must not compile
+            g.title = 'mutated';
+            // @ts-expect-error — nested arrays are readonly; push must not compile
+            g.levels.push({ level: 3, title: '', description: '', conditions: [] });
+        };
+        // assertReadonlyType is never called at runtime — it exists only to be type-checked
+        void assertReadonlyType;
     });
 });
