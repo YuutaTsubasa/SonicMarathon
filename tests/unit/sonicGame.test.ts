@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { createSonicGame } from '../../src/domain/sonicGame.ts';
-import type { RawSonicGameInput, RawMarathonLevelInput } from '../../src/domain/sonicGame.ts';
+import type { RawSonicGameInput, RawMarathonLevelInput, SonicGame } from '../../src/domain/sonicGame.ts';
 import { sonic1Input, sonic2Input } from '../../src/domain/initialData.ts';
 
 const validInput = (overrides: Partial<RawSonicGameInput> = {}): RawSonicGameInput => ({
@@ -32,6 +32,13 @@ const validInput = (overrides: Partial<RawSonicGameInput> = {}): RawSonicGameInp
     ],
     ...overrides,
 });
+
+const assertReadonlyType = (game: SonicGame): void => {
+    // @ts-expect-error — SonicGame is Readonly; direct property assignment must not compile
+    game.title = 'mutated';
+    // @ts-expect-error — nested arrays are readonly; push must not compile
+    game.levels.push({ level: 3, title: '', description: '', conditions: [] });
+};
 
 describe('createSonicGame', () => {
     it('Given a valid Sonic game, when it is created, then the domain object is returned successfully', () => {
@@ -66,6 +73,20 @@ describe('createSonicGame', () => {
         expect(result.ok).toBe(false);
         if (!result.ok) {
             expect(result.error).toMatch(/[Dd]uplicate/);
+        }
+    });
+
+    it('Given the same duplicated level repeated more than twice, when validation fails, then the duplicate list is de-duplicated', () => {
+        const levels: readonly RawMarathonLevelInput[] = [
+            { level: 1, title: 'L1', description: '', conditions: [] },
+            { level: 2, title: 'L2a', description: '', conditions: [] },
+            { level: 2, title: 'L2b', description: '', conditions: [] },
+            { level: 2, title: 'L2c', description: '', conditions: [] },
+        ];
+        const result = createSonicGame(validInput({ levels }));
+        expect(result.ok).toBe(false);
+        if (!result.ok) {
+            expect(result.error).toBe('Duplicate level numbers found: 2.');
         }
     });
 
@@ -121,15 +142,38 @@ describe('createSonicGame', () => {
         }
     });
 
+    it('Returned domain object is not affected by later raw-input mutations', () => {
+        const input = validInput();
+        const result = createSonicGame(input);
+        expect(result.ok).toBe(true);
+        if (result.ok) {
+            (input.platforms as string[])[0] = 'ps5';
+            (input.assets.logo as { src: string }).src = '/mutated-logo.png';
+            (input.assets.screenshots as { src: string; alt: string }[]).push({
+                src: '/extra.png',
+                alt: 'extra',
+            });
+            (input.levels[0]!.conditions as { type: 'clear-mode'; mode: 'anniversary' | 'classic' }[])[0] = {
+                type: 'clear-mode',
+                mode: 'classic',
+            };
+
+            expect(result.value.platforms).toEqual(['pc']);
+            expect(result.value.assets.logo.src).toBe('/logo.png');
+            expect(result.value.assets.screenshots).toEqual([]);
+            expect(result.value.levels[0]?.conditions[0]).toEqual({
+                type: 'clear-mode',
+                mode: 'anniversary',
+            });
+        }
+    });
+
     it('Domain object is deeply immutable at the TypeScript type level', () => {
         const result = createSonicGame(validInput());
         expect(result.ok).toBe(true);
-        if (result.ok) {
-            const game = result.value;
-            // @ts-expect-error — SonicGame is Readonly; direct property assignment must not compile
-            game.title = 'mutated';
-            // @ts-expect-error — nested arrays are readonly; push must not compile
-            game.levels.push({ level: 3, title: '', description: '', conditions: [] });
+        if (!result.ok) {
+            throw new Error(`Expected successful domain creation: ${result.error}`);
         }
+        expect(result.value.id).toBe('test-game');
     });
 });

@@ -110,6 +110,16 @@ export type DomainResult<T> = DomainSuccess<T> | DomainFailure;
 const success = <T>(value: T): DomainSuccess<T> => ({ ok: true, value });
 const failure = (error: string): DomainFailure => ({ ok: false, error });
 
+const cloneCondition = (condition: MarathonCondition): MarathonCondition => ({ ...condition });
+
+const cloneAssetRef = (asset: ImageAssetRef): ImageAssetRef => ({ ...asset });
+
+const cloneAssets = (assets: GameAssets): GameAssets => ({
+    logo: cloneAssetRef(assets.logo),
+    heroImage: cloneAssetRef(assets.heroImage),
+    screenshots: assets.screenshots.map(cloneAssetRef),
+});
+
 export type RawMarathonLevelInput = Readonly<{
     level: number;
     title: string;
@@ -146,13 +156,18 @@ const parseMarathonLevel = (raw: RawMarathonLevelInput): DomainResult<MarathonLe
     if (!isMarathonLevelNumber(raw.level)) {
         return failure(`Invalid level number: ${raw.level}. Must be one of ${VALID_LEVEL_NUMBERS.join(', ')}.`);
     }
-    return success({ ...raw, level: raw.level });
+    return success({
+        level: raw.level,
+        title: raw.title,
+        description: raw.description,
+        conditions: raw.conditions.map(cloneCondition),
+    });
 };
 
 const validateLevels = (levels: readonly MarathonLevel[]): DomainFailure | null => {
     const numbers = levels.map(l => l.level);
 
-    const duplicates = numbers.filter((n, i) => numbers.indexOf(n) !== i);
+    const duplicates = [...new Set(numbers.filter((n, i) => numbers.indexOf(n) !== i))];
     if (duplicates.length > 0) {
         return failure(`Duplicate level numbers found: ${duplicates.join(', ')}.`);
     }
@@ -210,9 +225,9 @@ export const createSonicGame = (input: RawSonicGameInput): DomainResult<SonicGam
         releaseYear: input.releaseYear,
         era: input.era,
         recommendedVersion: input.recommendedVersion,
-        platforms: input.platforms,
-        assets: input.assets,
-        levels: parsedLevels.sort((a, b) => a.level - b.level),
+        platforms: [...input.platforms],
+        assets: cloneAssets(input.assets),
+        levels: [...parsedLevels].sort((a, b) => a.level - b.level),
     };
 
     return success(game);
