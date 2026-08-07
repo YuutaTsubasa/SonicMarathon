@@ -87,17 +87,22 @@ function greet(name: string): string {
 
 ## 6. Visually Delimit Begin/End Scopes
 
-Use blank lines (and, where appropriate, named functions) to make the beginning and end of logical sections visually clear.
+When calling paired scope-delimiting functions (e.g. `beginGroup()`/`endGroup()`, `pushMatrix()`/`popMatrix()`, `startBatch()`/`commitBatch()`), wrap the body in a block `{ }` so the scope boundary is immediately visible.
 
 ```ts
-// ✅ — each logical block is separated by a blank line
-function process(items: Item[]): Result[] {
-  const validated = items.filter(isValid);
+// ❌ — begin/end boundary is invisible
+renderer.beginGroup();
+renderer.draw(a);
+renderer.draw(b);
+renderer.endGroup();
 
-  const transformed = validated.map(transform);
-
-  return transformed;
+// ✅ — the braces make the owned scope explicit
+renderer.beginGroup();
+{
+  renderer.draw(a);
+  renderer.draw(b);
 }
+renderer.endGroup();
 ```
 
 ---
