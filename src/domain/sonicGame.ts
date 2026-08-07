@@ -158,12 +158,9 @@ const validateLevels = (levels: readonly MarathonLevel[]): DomainFailure | null 
     }
 
     const sorted = [...numbers].sort((a, b) => a - b);
-    const missingLevel = sorted.reduce<number | null>(
-        (acc, num, i) => acc ?? (isMarathonLevelNumber(i + 1) && num !== i + 1 ? i + 1 : null),
-        null,
-    );
-    if (missingLevel !== null) {
-        return failure(`Levels must be consecutive starting from 1. Missing level ${missingLevel}.`);
+    const missingIndex = sorted.findIndex((num, i) => num !== i + 1);
+    if (missingIndex !== -1) {
+        return failure(`Levels must be consecutive starting from 1. Missing level ${missingIndex + 1}.`);
     }
 
     return null;
