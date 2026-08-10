@@ -1,6 +1,6 @@
 # SonicMarathon — Coding Principles
 
-Every implementation and code review **must** verify compliance with the following sixteen principles.
+This document is the **authoritative source** for SonicMarathon's sixteen coding principles. Every implementation and code review must verify compliance against this file rather than duplicating the full list elsewhere.
 
 ---
 
@@ -85,18 +85,19 @@ function greet(name: string): string {
 
 ---
 
-## 6. Visually Delimit Begin/End Scopes
+## 6. Extract Shared Constants and Protocol Definitions
 
-When calling paired scope-delimiting functions (e.g. `beginGroup()`/`endGroup()`, `pushMatrix()`/`popMatrix()`, `startBatch()`/`commitBatch()`), wrap the body in a block `{ }` so the scope boundary is immediately visible.
+Constants, protocol values, and shared definitions that represent the same concept across multiple modules should have one shared definition rather than being repeated independently.
+
+Prefer a shared exported constant, type, schema, or protocol definition when multiple components must agree on the same value or contract.
+
+---
+
+## 7. Visually Delimit Begin/End Scopes
+
+When calling paired scope-delimiting APIs, visually delimit the body owned by that pair with a block so the begin/end boundary is immediately clear.
 
 ```ts
-// ❌ — begin/end boundary is invisible
-renderer.beginGroup();
-renderer.draw(a);
-renderer.draw(b);
-renderer.endGroup();
-
-// ✅ — the braces make the owned scope explicit
 renderer.beginGroup();
 {
   renderer.draw(a);
@@ -105,21 +106,13 @@ renderer.beginGroup();
 renderer.endGroup();
 ```
 
----
+The same rule applies to APIs such as:
 
-## 7. Use Braces to Clarify Scope
+- `beginGroup()` / `endGroup()`
+- `pushMatrix()` / `popMatrix()`
+- `startBatch()` / `commitBatch()`
 
-Always use braces for control-flow blocks, even one-liners.
-
-```ts
-// ❌
-if (condition) doSomething();
-
-// ✅
-if (condition) {
-  doSomething();
-}
-```
+This principle is specifically about paired begin/end-style scopes. It is **not** a rule that every one-line control-flow statement must use braces.
 
 ---
 
@@ -229,7 +222,7 @@ function render<T>(state: LoadState<T>): string {
 }
 ```
 
-To enforce exhaustiveness, add an explicit check (e.g., a `default` branch that assigns to `never` or calls an `assertNever` helper) so a newly added variant cannot compile unless it is handled.
+To enforce exhaustiveness, add an explicit check (for example, a `default` branch that assigns to `never` or calls an `assertNever` helper) so a newly added variant cannot compile unless it is handled.
 
 ---
 
@@ -287,7 +280,7 @@ function addItem(cart: Cart, item: Item): Cart {
 
 ## 16. Make Invalid States Unrepresentable
 
-Enforce invariants at type boundaries so that impossible combinations cannot be constructed.
+**Enforce invariants at type boundaries** so that impossible combinations cannot be constructed.
 
 ```ts
 // ❌ — both fields optional allows an invalid "neither" state
@@ -299,4 +292,4 @@ type Result =
   | { kind: "failure"; error: string };
 ```
 
-Use the type system to make illegal states a compile-time error rather than a runtime guard.
+Use the type system to make illegal states a compile-time error rather than relying on runtime guards after invalid data has already crossed a boundary.
