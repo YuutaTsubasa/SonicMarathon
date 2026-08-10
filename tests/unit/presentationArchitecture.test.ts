@@ -1,10 +1,11 @@
 import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
-const PRESENTATION_SOURCE_URLS = [
-    new URL('../../src/ui/components/Timeline.svelte', import.meta.url),
-    new URL('../../src/ui/routes/HomePage.svelte', import.meta.url),
+const PRESENTATION_SOURCE_PATHS = [
+    'src/ui/components/Timeline.svelte',
+    'src/ui/routes/HomePage.svelte',
 ] as const;
 const FORBIDDEN_PRESENTATION_DEPENDENCIES = [
     'initialData',
@@ -12,7 +13,7 @@ const FORBIDDEN_PRESENTATION_DEPENDENCIES = [
 ] as const;
 
 const readPresentationSources = (): readonly string[] =>
-    PRESENTATION_SOURCE_URLS.map(url => readFileSync(url, 'utf8'));
+    PRESENTATION_SOURCE_PATHS.map(path => readFileSync(resolve(process.cwd(), path), 'utf8'));
 
 const containsForbiddenDependency = (source: string): boolean =>
     FORBIDDEN_PRESENTATION_DEPENDENCIES.some(dependency => source.includes(dependency));
