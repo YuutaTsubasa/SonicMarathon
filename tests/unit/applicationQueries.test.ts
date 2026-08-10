@@ -58,7 +58,7 @@ describe('Application queries', () => {
     });
 
     it('Given a repository that returns a readonly game collection, when timeline query runs, then the query does not mutate or re-sort it', () => {
-        const repositoryOrder = [sonic2, sonic1] as const;
+        const repositoryOrder = Object.freeze([sonic2, sonic1] as const);
         const repository: SonicGameRepository = {
             ...fakeRepository,
             getAll: () => repositoryOrder,
