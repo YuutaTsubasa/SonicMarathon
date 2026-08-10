@@ -1,10 +1,11 @@
 import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
-const APPLICATION_SOURCE_URLS = [
-    new URL('../../src/application/getGameDetail.ts', import.meta.url),
-    new URL('../../src/application/getTimelineGames.ts', import.meta.url),
+const APPLICATION_SOURCE_PATHS = [
+    'src/application/getGameDetail.ts',
+    'src/application/getTimelineGames.ts',
 ] as const;
 
 const FORBIDDEN_APPLICATION_DEPENDENCIES = [
@@ -14,7 +15,7 @@ const FORBIDDEN_APPLICATION_DEPENDENCIES = [
 ] as const;
 
 const readApplicationSources = (): readonly string[] =>
-    APPLICATION_SOURCE_URLS.map(url => readFileSync(url, 'utf8'));
+    APPLICATION_SOURCE_PATHS.map(path => readFileSync(resolve(process.cwd(), path), 'utf8'));
 
 const containsForbiddenDependency = (source: string): boolean =>
     FORBIDDEN_APPLICATION_DEPENDENCIES.some(dependency => source.includes(dependency));
