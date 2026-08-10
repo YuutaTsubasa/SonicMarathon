@@ -1,7 +1,7 @@
 # SonicMarathon — Implementation & Review Checklist
 
 Use this checklist when **implementing** a feature or **reviewing** a pull request.  
-Every item maps to one of the project's [sixteen coding principles](./coding-principles.md).
+The authoritative definitions for P1–P16 live in [coding-principles.md](./coding-principles.md). This checklist intentionally references those principles instead of redefining the complete list.
 
 ---
 
@@ -12,22 +12,10 @@ Every item maps to one of the project's [sixteen coding principles](./coding-pri
 - [ ] Is the domain model expressed as pure TypeScript types / discriminated unions, free from UI or infrastructure concerns? (DDD)
 
 ### While Writing Code
-- [ ] **[P1]** Have you removed all comments that merely restate the code?
-- [ ] **[P2]** Have you replaced any section comments with named functions?
-- [ ] **[P3]** Have you avoided unnecessary wrapper objects or stores around plain values?
-- [ ] **[P4]** Have you named every magic number and string constant?
-- [ ] **[P5]** Have you moved all constant declarations to module scope (outside functions)?
-- [ ] **[P6]** Have you wrapped code owned by paired begin/end-style calls in a `{ }` block so the scope is visually explicit?
-- [ ] **[P7]** Have you added braces to every `if`/`else`/`for`/`while` block?
-- [ ] **[P8]** Have you replaced imperative loops with declarative collection operations (`map`, `filter`, `reduce`, …)?
-- [ ] **[P9]** Have you used `const` everywhere and allowed TypeScript to infer types?
-- [ ] **[P10]** Have you added early returns for all edge cases and guard clauses?
-- [ ] **[P11]** Have you replaced multi-branch `if/else` chains with lookup tables or expressions?
-- [ ] **[P12]** Have you modelled variant state as exhaustive discriminated unions?
-- [ ] **[P13]** Have you used `derived` stores instead of manually synchronising two writables?
-- [ ] **[P14]** Have you used `async/await` for all async work and avoided blocking calls?
-- [ ] **[P15]** Have you kept state immutable and given each state value a single clear owner?
-- [ ] **[P16]** Have you used the type system to make invalid states unrepresentable?
+- [ ] Have you reviewed the implementation against [P1–P16](./coding-principles.md)?
+- [ ] For **P6**, are shared constants and protocol definitions extracted instead of duplicated across modules?
+- [ ] For **P7**, are paired begin/end-style API scopes visually delimited where applicable?
+- [ ] For **P16**, are invariants enforced at type boundaries so invalid states cannot be represented?
 
 ### After Writing Code
 - [ ] Does the implementation pass all tests (green phase)?
@@ -38,7 +26,7 @@ Every item maps to one of the project's [sixteen coding principles](./coding-pri
 
 ## Code Review Checklist
 
-Run through the same sixteen points as above, plus:
+Review the change against the authoritative [sixteen coding principles](./coding-principles.md), plus:
 
 - [ ] Does the PR introduce no new magic numbers or strings?
 - [ ] Is all new async code using `async/await` (not `.then()` chains)?
