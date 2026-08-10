@@ -23,8 +23,42 @@
 
 <style>
     .timeline {
+        --timeline-padding-block-start: 2rem;
+        --timeline-padding-inline: 1.5rem;
+        --timeline-padding-block-end: 3rem;
+        --timeline-node-width: 17rem;
+        --timeline-line-offset: 3.6rem;
+        --timeline-line-thickness: 0.3rem;
+        --timeline-node-artwork-row-height: 8rem;
+        --timeline-node-gap: 0.65rem;
+        --timeline-focus-width: 0.2rem;
+        --timeline-focus-offset: 0.4rem;
+        --timeline-focus-radius: 0.5rem;
+        --timeline-year-font-size: 1.15rem;
+        --timeline-year-font-weight: 800;
+        --timeline-year-letter-spacing: 0.08em;
+        --timeline-marker-size: 1.35rem;
+        --timeline-marker-border-width: 0.3rem;
+        --timeline-marker-ring-width: 0.2rem;
+        --timeline-artwork-width: 13rem;
+        --timeline-artwork-height: 8rem;
+        --timeline-artwork-padding: 0.8rem;
+        --timeline-artwork-radius: 1.2rem;
+        --timeline-artwork-opacity: 92%;
+        --timeline-artwork-shadow-y: 0.75rem;
+        --timeline-artwork-shadow-blur: 2rem;
+        --timeline-artwork-shadow-opacity: 20%;
+        --timeline-title-max-width: 14rem;
+        --timeline-title-font-weight: 700;
+        --timeline-brand-gold: var(--color-sonic-gold, #f4c430);
+        --timeline-brand-blue: #1467d8;
+        --timeline-surface: var(--color-surface-on-blue, #fff);
+
         overflow-x: auto;
-        padding: 2rem 1.5rem 3rem;
+        padding:
+            var(--timeline-padding-block-start)
+            var(--timeline-padding-inline)
+            var(--timeline-padding-block-end);
         scrollbar-gutter: stable;
     }
 
@@ -40,17 +74,17 @@
 
     .timeline__item {
         position: relative;
-        flex: 0 0 17rem;
+        flex: 0 0 var(--timeline-node-width);
     }
 
     .timeline__item::after {
         content: '';
         position: absolute;
-        top: 3.6rem;
+        top: var(--timeline-line-offset);
         left: 50%;
         width: 100%;
-        height: 0.3rem;
-        background: #f4c430;
+        height: var(--timeline-line-thickness);
+        background: var(--timeline-brand-gold);
         transform: translateX(50%);
         z-index: 0;
     }
@@ -63,9 +97,9 @@
         position: relative;
         z-index: 1;
         display: grid;
-        grid-template-rows: auto auto 8rem auto;
+        grid-template-rows: auto auto var(--timeline-node-artwork-row-height) auto;
         justify-items: center;
-        gap: 0.65rem;
+        gap: var(--timeline-node-gap);
         width: 100%;
         padding: 0;
         border: 0;
@@ -76,35 +110,39 @@
     }
 
     .timeline-node:focus-visible {
-        outline: 0.2rem solid currentColor;
-        outline-offset: 0.4rem;
-        border-radius: 0.5rem;
+        outline: var(--timeline-focus-width) solid currentColor;
+        outline-offset: var(--timeline-focus-offset);
+        border-radius: var(--timeline-focus-radius);
     }
 
     .timeline-node__year {
-        font-size: 1.15rem;
-        font-weight: 800;
-        letter-spacing: 0.08em;
+        font-size: var(--timeline-year-font-size);
+        font-weight: var(--timeline-year-font-weight);
+        letter-spacing: var(--timeline-year-letter-spacing);
     }
 
     .timeline-node__marker {
-        width: 1.35rem;
+        width: var(--timeline-marker-size);
         aspect-ratio: 1;
-        border: 0.3rem solid #fff;
+        border: var(--timeline-marker-border-width) solid var(--timeline-surface);
         border-radius: 50%;
-        background: #1467d8;
-        box-shadow: 0 0 0 0.2rem #f4c430;
+        background: var(--timeline-brand-blue);
+        box-shadow: 0 0 0 var(--timeline-marker-ring-width) var(--timeline-brand-gold);
     }
 
     .timeline-node__artwork {
         display: grid;
         place-items: center;
-        width: 13rem;
-        height: 8rem;
-        padding: 0.8rem;
-        border-radius: 1.2rem;
-        background: rgb(255 255 255 / 92%);
-        box-shadow: 0 0.75rem 2rem rgb(0 0 0 / 20%);
+        width: var(--timeline-artwork-width);
+        height: var(--timeline-artwork-height);
+        padding: var(--timeline-artwork-padding);
+        border-radius: var(--timeline-artwork-radius);
+        background: rgb(255 255 255 / var(--timeline-artwork-opacity));
+        box-shadow:
+            0
+            var(--timeline-artwork-shadow-y)
+            var(--timeline-artwork-shadow-blur)
+            rgb(0 0 0 / var(--timeline-artwork-shadow-opacity));
     }
 
     .timeline-node__artwork img {
@@ -115,8 +153,8 @@
     }
 
     .timeline-node__title {
-        max-width: 14rem;
-        font-weight: 700;
+        max-width: var(--timeline-title-max-width);
+        font-weight: var(--timeline-title-font-weight);
         text-align: center;
     }
 </style>
