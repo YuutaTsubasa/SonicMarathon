@@ -9,7 +9,7 @@ export const sonic1Input: RawSonicGameInput = {
     recommendedVersion: 'sonic-origins',
     platforms: ['nintendo-switch', 'ps4', 'ps5', 'xbox-one', 'xbox-series', 'pc'],
     assets: {
-        logo: { src: '/assets/sonic-1/logo.png', alt: 'Sonic the Hedgehog logo' },
+        logo: { src: '/assets/sonic-1/logo.svg', alt: 'Sonic the Hedgehog logo' },
         heroImage: { src: '/assets/sonic-1/hero.png', alt: 'Sonic the Hedgehog hero image' },
         screenshots: [],
     },
@@ -66,7 +66,7 @@ export const sonic2Input: RawSonicGameInput = {
     recommendedVersion: 'sonic-origins',
     platforms: ['nintendo-switch', 'ps4', 'ps5', 'xbox-one', 'xbox-series', 'pc'],
     assets: {
-        logo: { src: '/assets/sonic-2/logo.png', alt: 'Sonic the Hedgehog 2 logo' },
+        logo: { src: '/assets/sonic-2/logo.svg', alt: 'Sonic the Hedgehog 2 logo' },
         heroImage: { src: '/assets/sonic-2/hero.png', alt: 'Sonic the Hedgehog 2 hero image' },
         screenshots: [],
     },
