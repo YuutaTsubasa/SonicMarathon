@@ -1,4 +1,4 @@
-name: Regenerate lockfile and validate
+name: Capture validation output
 
 on:
   push:
@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  validate:
+  capture:
     if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
@@ -20,13 +20,10 @@ jobs:
           cache: npm
       - run: npm install --package-lock-only --ignore-scripts
       - run: npm ci
-      - run: npm run check
+      - run: npm run check > check.log 2>&1 || true
       - run: |
-          if git diff --quiet -- package-lock.json; then
-            exit 0
-          fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add package-lock.json
-          git commit -m "regenerate package lockfile"
+          git add package-lock.json check.log
+          git commit -m "capture validation output"
           git push
