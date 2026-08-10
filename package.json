@@ -2,11 +2,13 @@
   "name": "sonicmarathon",
   "version": "1.0.0",
   "description": "A Svelte-based project (with optional Tauri v2 desktop packaging) developed with TDD, DDD, Functional-Based, and Reactive principles.",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
+    "dev": "vite",
+    "build": "vite build",
     "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "svelte-check --tsconfig ./tsconfig.json",
     "check": "npm run typecheck && npm test"
   },
   "repository": {
@@ -17,8 +19,15 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^6.2.0",
+    "@testing-library/jest-dom": "^6.8.0",
+    "@testing-library/svelte": "^5.2.8",
     "@vitest/coverage-v8": "^4.1.10",
+    "jsdom": "^26.1.0",
+    "svelte": "^5.38.0",
+    "svelte-check": "^4.3.1",
     "typescript": "^7.0.2",
+    "vite": "^7.1.1",
     "vitest": "^4.1.10"
   }
 }
