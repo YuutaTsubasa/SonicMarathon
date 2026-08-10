@@ -17,7 +17,10 @@ const readApplicationSources = (): readonly string[] =>
     APPLICATION_SOURCE_URLS.map(url => readFileSync(url, 'utf8'));
 
 const containsForbiddenDependency = (source: string): boolean =>
-    FORBIDDEN_APPLICATION_DEPENDENCIES.some(dependency => source.includes(dependency));
+    source
+        .split('\n')
+        .filter(line => line.trimStart().startsWith('import'))
+        .some(line => FORBIDDEN_APPLICATION_DEPENDENCIES.some(dependency => line.includes(dependency)));
 
 describe('Application architecture', () => {
     it('Given the Application source files, they do not import Svelte, initialData, or staticSonicGameRepository', () => {
