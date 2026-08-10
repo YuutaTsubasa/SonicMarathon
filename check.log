@@ -9,14 +9,154 @@
 Loading svelte-check in workspace: /home/runner/work/SonicMarathon/SonicMarathon
 Getting Svelte diagnostics...
 
-/home/runner/work/SonicMarathon/SonicMarathon/[32mtests/unit/applicationArchitecture.test.ts[39m:1:30
-[31mError[39m: Cannot find name 'node:fs'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig. 
-[36mimport { readFileSync } from [35m'node:fs'[36m;[39m
-
-/home/runner/work/SonicMarathon/SonicMarathon/[32mtests/unit/presentationArchitecture.test.ts[39m:1:30
-[31mError[39m: Cannot find name 'node:fs'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig. 
-[36mimport { readFileSync } from [35m'node:fs'[36m;[39m
-
-====================================
-[31msvelte-check found 2 errors and 0 warnings in 2 files
+[32msvelte-check found 0 errors and 0 warnings
 [39m
+> sonicmarathon@1.0.0 test
+> vitest run
+
+12:57:05 PM [vite-plugin-svelte] no Svelte config found at /home/runner/work/SonicMarathon/SonicMarathon - using default configuration.
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.10 [39m[90m/home/runner/work/SonicMarathon/SonicMarathon[39m
+
+ [32m✓[39m tests/unit/applicationQueries.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m tests/unit/staticSonicGameRepository.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m tests/unit/sonicGame.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [31m❯[39m tests/unit/applicationArchitecture.test.ts [2m([22m[2m1 test[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 9[2mms[22m[39m
+[31m     [31m×[31m Given the Application source files, they do not import Svelte, initialData, or staticSonicGameRepository[39m[32m 7[2mms[22m[39m
+ [31m❯[39m tests/unit/presentationArchitecture.test.ts [2m([22m[2m1 test[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 8[2mms[22m[39m
+[31m     [31m×[31m does not import raw static data or the static repository implementation[39m[32m 6[2mms[22m[39m
+ [31m❯[39m tests/unit/timelineComponent.test.ts [2m([22m[2m3 tests[22m[2m | [22m[31m3 failed[39m[2m)[22m[32m 28[2mms[22m[39m
+[31m     [31m×[31m renders Sonic 1 and Sonic 2 in the supplied Application order[39m[32m 20[2mms[22m[39m
+[31m     [31m×[31m renders each release year and Domain logo alt text[39m[32m 5[2mms[22m[39m
+[31m     [31m×[31m uses one ordered horizontal track inside a horizontally scrollable timeline container[39m[32m 1[2mms[22m[39m
+ [31m❯[39m tests/unit/homePage.test.ts [2m([22m[2m1 test[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 28[2mms[22m[39m
+[31m     [31m×[31m gets timeline data through the Application query and renders it[39m[32m 26[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 6 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/unit/applicationArchitecture.test.ts[2m > [22mApplication architecture[2m > [22mGiven the Application source files, they do not import Svelte, initialData, or staticSonicGameRepository
+[31m[1mTypeError[22m: The URL must be of scheme file[39m
+[36m [2m❯[22m tests/unit/applicationArchitecture.test.ts:[2m17:40[22m[39m
+    [90m 15|[39m
+    [90m 16|[39m [35mconst[39m readApplicationSources [33m=[39m ()[33m:[39m readonly string[] [33m=>[39m
+    [90m 17|[39m     [33mAPPLICATION_SOURCE_URLS[39m[33m.[39m[34mmap[39m(url [33m=>[39m [34mreadFileSync[39m(url[33m,[39m [32m'utf8'[39m))[33m;[39m
+    [90m   |[39m                                        [31m^[39m
+    [90m 18|[39m
+    [90m 19|[39m [35mconst[39m containsForbiddenDependency [33m=[39m (source[33m:[39m string)[33m:[39m boolean [33m=>[39m
+[90m [2m❯[22m readApplicationSources tests/unit/applicationArchitecture.test.ts:[2m17:29[22m[39m
+[90m [2m❯[22m tests/unit/applicationArchitecture.test.ts:[2m24:25[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/homePage.test.ts[2m > [22mHomePage[2m > [22mgets timeline data through the Application query and renders it
+[31m[1mSvelte error[22m: lifecycle_function_unavailable
+`mount(...)` is not available on the server
+https://svelte.dev/e/lifecycle_function_unavailable[39m
+[36m [2m❯[22m Module.lifecycle_function_unavailable node_modules/svelte/src/internal/server/errors.js:[2m126:16[22m[39m
+    [90m124|[39m  */[39m
+    [90m125|[39m [35mexport[39m [35mfunction[39m [34mlifecycle_function_unavailable[39m(name) {
+    [90m126|[39m  const error = new Error(`lifecycle_function_unavailable\n\`${name}(..…
+    [90m   |[39m                [31m^[39m
+    [90m127|[39m
+    [90m128|[39m  error[33m.[39mname [33m=[39m [32m'Svelte error'[39m[33m;[39m
+[90m [2m❯[22m Module.mount node_modules/svelte/src/index-server.js:[2m25:4[22m[39m
+[90m [2m❯[22m mountModern node_modules/@testing-library/svelte-core/src/mount.js:[2m21:28[22m[39m
+[90m [2m❯[22m mount node_modules/@testing-library/svelte-core/src/mount.js:[2m145:44[22m[39m
+[90m [2m❯[22m Module.render node_modules/@testing-library/svelte-core/src/render.js:[2m17:28[22m[39m
+[90m [2m❯[22m render node_modules/@testing-library/svelte/src/pure.js:[2m54:10[22m[39m
+[90m [2m❯[22m tests/unit/homePage.test.ts:[2m37:9[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/presentationArchitecture.test.ts[2m > [22mPresentation architecture[2m > [22mdoes not import raw static data or the static repository implementation
+[31m[1mTypeError[22m: The URL must be of scheme file[39m
+[36m [2m❯[22m tests/unit/presentationArchitecture.test.ts:[2m15:41[22m[39m
+    [90m 13|[39m
+    [90m 14|[39m [35mconst[39m readPresentationSources [33m=[39m ()[33m:[39m readonly string[] [33m=>[39m
+    [90m 15|[39m     [33mPRESENTATION_SOURCE_URLS[39m[33m.[39m[34mmap[39m(url [33m=>[39m [34mreadFileSync[39m(url[33m,[39m [32m'utf8'[39m))[33m;[39m
+    [90m   |[39m                                         [31m^[39m
+    [90m 16|[39m
+    [90m 17|[39m [35mconst[39m containsForbiddenDependency [33m=[39m (source[33m:[39m string)[33m:[39m boolean [33m=>[39m
+[90m [2m❯[22m readPresentationSources tests/unit/presentationArchitecture.test.ts:[2m15:30[22m[39m
+[90m [2m❯[22m tests/unit/presentationArchitecture.test.ts:[2m22:16[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/timelineComponent.test.ts[2m > [22mTimeline[2m > [22mrenders Sonic 1 and Sonic 2 in the supplied Application order
+[31m[1mSvelte error[22m: lifecycle_function_unavailable
+`mount(...)` is not available on the server
+https://svelte.dev/e/lifecycle_function_unavailable[39m
+[36m [2m❯[22m Module.lifecycle_function_unavailable node_modules/svelte/src/internal/server/errors.js:[2m126:16[22m[39m
+    [90m124|[39m  */[39m
+    [90m125|[39m [35mexport[39m [35mfunction[39m [34mlifecycle_function_unavailable[39m(name) {
+    [90m126|[39m  const error = new Error(`lifecycle_function_unavailable\n\`${name}(..…
+    [90m   |[39m                [31m^[39m
+    [90m127|[39m
+    [90m128|[39m  error[33m.[39mname [33m=[39m [32m'Svelte error'[39m[33m;[39m
+[90m [2m❯[22m Module.mount node_modules/svelte/src/index-server.js:[2m25:4[22m[39m
+[90m [2m❯[22m mountModern node_modules/@testing-library/svelte-core/src/mount.js:[2m21:28[22m[39m
+[90m [2m❯[22m mount node_modules/@testing-library/svelte-core/src/mount.js:[2m145:44[22m[39m
+[90m [2m❯[22m Module.render node_modules/@testing-library/svelte-core/src/render.js:[2m17:28[22m[39m
+[90m [2m❯[22m render node_modules/@testing-library/svelte/src/pure.js:[2m54:10[22m[39m
+[90m [2m❯[22m tests/unit/timelineComponent.test.ts:[2m40:9[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/timelineComponent.test.ts[2m > [22mTimeline[2m > [22mrenders each release year and Domain logo alt text
+[31m[1mSvelte error[22m: lifecycle_function_unavailable
+`mount(...)` is not available on the server
+https://svelte.dev/e/lifecycle_function_unavailable[39m
+[36m [2m❯[22m Module.lifecycle_function_unavailable node_modules/svelte/src/internal/server/errors.js:[2m126:16[22m[39m
+    [90m124|[39m  */[39m
+    [90m125|[39m [35mexport[39m [35mfunction[39m [34mlifecycle_function_unavailable[39m(name) {
+    [90m126|[39m  const error = new Error(`lifecycle_function_unavailable\n\`${name}(..…
+    [90m   |[39m                [31m^[39m
+    [90m127|[39m
+    [90m128|[39m  error[33m.[39mname [33m=[39m [32m'Svelte error'[39m[33m;[39m
+[90m [2m❯[22m Module.mount node_modules/svelte/src/index-server.js:[2m25:4[22m[39m
+[90m [2m❯[22m mountModern node_modules/@testing-library/svelte-core/src/mount.js:[2m21:28[22m[39m
+[90m [2m❯[22m mount node_modules/@testing-library/svelte-core/src/mount.js:[2m145:44[22m[39m
+[90m [2m❯[22m Module.render node_modules/@testing-library/svelte-core/src/render.js:[2m17:28[22m[39m
+[90m [2m❯[22m render node_modules/@testing-library/svelte/src/pure.js:[2m54:10[22m[39m
+[90m [2m❯[22m tests/unit/timelineComponent.test.ts:[2m49:9[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/timelineComponent.test.ts[2m > [22mTimeline[2m > [22muses one ordered horizontal track inside a horizontally scrollable timeline container
+[31m[1mSvelte error[22m: lifecycle_function_unavailable
+`mount(...)` is not available on the server
+https://svelte.dev/e/lifecycle_function_unavailable[39m
+[36m [2m❯[22m Module.lifecycle_function_unavailable node_modules/svelte/src/internal/server/errors.js:[2m126:16[22m[39m
+    [90m124|[39m  */[39m
+    [90m125|[39m [35mexport[39m [35mfunction[39m [34mlifecycle_function_unavailable[39m(name) {
+    [90m126|[39m  const error = new Error(`lifecycle_function_unavailable\n\`${name}(..…
+    [90m   |[39m                [31m^[39m
+    [90m127|[39m
+    [90m128|[39m  error[33m.[39mname [33m=[39m [32m'Svelte error'[39m[33m;[39m
+[90m [2m❯[22m Module.mount node_modules/svelte/src/index-server.js:[2m25:4[22m[39m
+[90m [2m❯[22m mountModern node_modules/@testing-library/svelte-core/src/mount.js:[2m21:28[22m[39m
+[90m [2m❯[22m mount node_modules/@testing-library/svelte-core/src/mount.js:[2m145:44[22m[39m
+[90m [2m❯[22m Module.render node_modules/@testing-library/svelte-core/src/render.js:[2m17:28[22m[39m
+[90m [2m❯[22m render node_modules/@testing-library/svelte/src/pure.js:[2m54:10[22m[39m
+[90m [2m❯[22m tests/unit/timelineComponent.test.ts:[2m64:9[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m4 failed[39m[22m[2m | [22m[1m[32m3 passed[39m[22m[90m (7)[39m
+[2m      Tests [22m [1m[31m6 failed[39m[22m[2m | [22m[1m[32m28 passed[39m[22m[90m (34)[39m
+[2m   Start at [22m 12:57:05
+[2m   Duration [22m 2.41s[2m (transform 1.29s, setup 525ms, import 1.91s, tests 107ms, environment 3.45s)[22m
+
+
+::error file=/home/runner/work/SonicMarathon/SonicMarathon/tests/unit/applicationArchitecture.test.ts,title=tests/unit/applicationArchitecture.test.ts > Application architecture > Given the Application source files%2C they do not import Svelte%2C initialData%2C or staticSonicGameRepository,line=17,column=40::TypeError: The URL must be of scheme file%0A ❯ tests/unit/applicationArchitecture.test.ts:17:40%0A ❯ readApplicationSources tests/unit/applicationArchitecture.test.ts:17:29%0A ❯ tests/unit/applicationArchitecture.test.ts:24:25%0A%0A⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯%0ASerialized Error: { code: 'ERR_INVALID_URL_SCHEME' }%0A
+
+::error file=/home/runner/work/SonicMarathon/SonicMarathon/node_modules/svelte/src/internal/server/errors.js,title=tests/unit/homePage.test.ts > HomePage > gets timeline data through the Application query and renders it,line=126,column=16::Svelte error: lifecycle_function_unavailable%0A`mount(...)` is not available on the server%0Ahttps://svelte.dev/e/lifecycle_function_unavailable%0A ❯ Module.lifecycle_function_unavailable node_modules/svelte/src/internal/server/errors.js:126:16%0A ❯ Module.mount node_modules/svelte/src/index-server.js:25:4%0A ❯ mountModern node_modules/@testing-library/svelte-core/src/mount.js:21:28%0A ❯ mount node_modules/@testing-library/svelte-core/src/mount.js:145:44%0A ❯ Module.render node_modules/@testing-library/svelte-core/src/render.js:17:28%0A ❯ render node_modules/@testing-library/svelte/src/pure.js:54:10%0A ❯ tests/unit/homePage.test.ts:37:9%0A%0A
+
+::error file=/home/runner/work/SonicMarathon/SonicMarathon/tests/unit/presentationArchitecture.test.ts,title=tests/unit/presentationArchitecture.test.ts > Presentation architecture > does not import raw static data or the static repository implementation,line=15,column=41::TypeError: The URL must be of scheme file%0A ❯ tests/unit/presentationArchitecture.test.ts:15:41%0A ❯ readPresentationSources tests/unit/presentationArchitecture.test.ts:15:30%0A ❯ tests/unit/presentationArchitecture.test.ts:22:16%0A%0A⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯%0ASerialized Error: { code: 'ERR_INVALID_URL_SCHEME' }%0A
+
+::error file=/home/runner/work/SonicMarathon/SonicMarathon/node_modules/svelte/src/internal/server/errors.js,title=tests/unit/timelineComponent.test.ts > Timeline > renders Sonic 1 and Sonic 2 in the supplied Application order,line=126,column=16::Svelte error: lifecycle_function_unavailable%0A`mount(...)` is not available on the server%0Ahttps://svelte.dev/e/lifecycle_function_unavailable%0A ❯ Module.lifecycle_function_unavailable node_modules/svelte/src/internal/server/errors.js:126:16%0A ❯ Module.mount node_modules/svelte/src/index-server.js:25:4%0A ❯ mountModern node_modules/@testing-library/svelte-core/src/mount.js:21:28%0A ❯ mount node_modules/@testing-library/svelte-core/src/mount.js:145:44%0A ❯ Module.render node_modules/@testing-library/svelte-core/src/render.js:17:28%0A ❯ render node_modules/@testing-library/svelte/src/pure.js:54:10%0A ❯ tests/unit/timelineComponent.test.ts:40:9%0A%0A
+
+::error file=/home/runner/work/SonicMarathon/SonicMarathon/node_modules/svelte/src/internal/server/errors.js,title=tests/unit/timelineComponent.test.ts > Timeline > renders each release year and Domain logo alt text,line=126,column=16::Svelte error: lifecycle_function_unavailable%0A`mount(...)` is not available on the server%0Ahttps://svelte.dev/e/lifecycle_function_unavailable%0A ❯ Module.lifecycle_function_unavailable node_modules/svelte/src/internal/server/errors.js:126:16%0A ❯ Module.mount node_modules/svelte/src/index-server.js:25:4%0A ❯ mountModern node_modules/@testing-library/svelte-core/src/mount.js:21:28%0A ❯ mount node_modules/@testing-library/svelte-core/src/mount.js:145:44%0A ❯ Module.render node_modules/@testing-library/svelte-core/src/render.js:17:28%0A ❯ render node_modules/@testing-library/svelte/src/pure.js:54:10%0A ❯ tests/unit/timelineComponent.test.ts:49:9%0A%0A
+
+::error file=/home/runner/work/SonicMarathon/SonicMarathon/node_modules/svelte/src/internal/server/errors.js,title=tests/unit/timelineComponent.test.ts > Timeline > uses one ordered horizontal track inside a horizontally scrollable timeline container,line=126,column=16::Svelte error: lifecycle_function_unavailable%0A`mount(...)` is not available on the server%0Ahttps://svelte.dev/e/lifecycle_function_unavailable%0A ❯ Module.lifecycle_function_unavailable node_modules/svelte/src/internal/server/errors.js:126:16%0A ❯ Module.mount node_modules/svelte/src/index-server.js:25:4%0A ❯ mountModern node_modules/@testing-library/svelte-core/src/mount.js:21:28%0A ❯ mount node_modules/@testing-library/svelte-core/src/mount.js:145:44%0A ❯ Module.render node_modules/@testing-library/svelte-core/src/render.js:17:28%0A ❯ render node_modules/@testing-library/svelte/src/pure.js:54:10%0A ❯ tests/unit/timelineComponent.test.ts:64:9%0A%0A
