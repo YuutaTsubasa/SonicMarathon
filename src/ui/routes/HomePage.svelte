@@ -3,7 +3,7 @@
     import Timeline from '../components/Timeline.svelte';
 
     let { getTimelineGames }: { getTimelineGames: GetTimelineGames } = $props();
-    const games = getTimelineGames();
+    const games = $derived(getTimelineGames());
 </script>
 
 <svelte:head>
