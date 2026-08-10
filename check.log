@@ -9,13 +9,6 @@
 Loading svelte-check in workspace: /home/runner/work/SonicMarathon/SonicMarathon
 Getting Svelte diagnostics...
 
-/home/runner/work/SonicMarathon/SonicMarathon/[32msrc/ui/routes/HomePage.svelte[39m:6:19
-[33mWarn[39m: This reference only captures the initial value of `getTimelineGames`. Did you mean to reference it inside a closure instead?
-https://svelte.dev/e/state_referenced_locally (svelte)
-[36m    let { getTimelineGames }: { getTimelineGames: GetTimelineGames } = $props();
-    const games = [35mgetTimelineGames[36m();
-</script>[39m
-
 /home/runner/work/SonicMarathon/SonicMarathon/[32mtests/unit/applicationArchitecture.test.ts[39m:1:30
 [31mError[39m: Cannot find name 'node:fs'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig. 
 [36mimport { readFileSync } from [35m'node:fs'[36m;[39m
@@ -25,5 +18,5 @@ https://svelte.dev/e/state_referenced_locally (svelte)
 [36mimport { readFileSync } from [35m'node:fs'[36m;[39m
 
 ====================================
-[31msvelte-check found 2 errors and 1 warning in 3 files
+[31msvelte-check found 2 errors and 0 warnings in 2 files
 [39m
